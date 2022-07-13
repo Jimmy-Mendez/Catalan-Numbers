@@ -7,7 +7,7 @@ class origin(Scene):
         vid.scale(.6)
         link = Text("Link in description")
         des = ImageMobject("des.jpg")
-        dyck = Text("Dyck Paths")
+        dyck = Text("Dyck Words")
         self.play(DrawBorderThenFill(eugene))
         self.play(eugene.animate.shift(3 * LEFT).scale(0.5))
         self.wait(2)

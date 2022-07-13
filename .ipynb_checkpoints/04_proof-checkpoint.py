@@ -14,7 +14,6 @@ class proof(Scene):
         for dot in dots.values():
             self.play(FadeIn(dot, scale=0.5, run_time = 0.08))
         self.wait(0.5)
-        self.play(ShowCreation(line))
         self.play(pos_paths.animate.shift(3 * LEFT).scale(0.5))
         points_1 = [[1, 0, 0],[1, 0, 0],[0, 1, 0],[1, 0, 0],[0, 1, 0],[0, 1, 0],[1, 0, 0],[0, 1, 0]]
         points_2 = [[0, 1, 0],[0, 1, 0],[1, 0, 0],[0, 1, 0],[0, 1, 0],[1, 0, 0],[1, 0, 0],[1, 0, 0]]
@@ -32,14 +31,30 @@ class proof(Scene):
         
         #showing possible up strokes   
         
-        lines = []
-        var_index_2 = 0
-        location = [-2., -2., 0]
-        
-        for point in points_1:
-            if point == [0, 1, 0]:
-                lines.append(Line(start= np.array(location), end=np.add(location,[0, 1., 0.]), buff=0, color = '#ffeb69'))
-                var_index_2 = var_index_2 + 1
-            location = np.add(location,point)
-        group_lines = Group(*lines)
-        self.play(ShowCreation(group_lines, scale=0.5, run_time = 0.28))
+        for points_list in [points_1,points_2,points_3]:
+            lines = []
+            var_index_2 = 0
+            location = [-2., -2., 0]
+            for point in points_list:
+                if point == [0, 1, 0]:
+                    lines.append(Line(start= np.array(location), end=np.add(location,[0, 1., 0.]), buff=0, color = '#ffeb69'))
+                    var_index_2 = var_index_2 + 1
+                location = np.add(location,point)
+            group_lines = Group(*lines)
+            self.play(ShowCreation(group_lines, scale=0.5, run_time = 0.28))
+            self.wait(0.5)
+            self.play(Uncreate(group_lines, scale=0.5, run_time = 0.28))
+            
+        for points_list in [points_1,points_2,points_3]:
+            lines = []
+            var_index_2 = 0
+            location = [-2., -2., 0]
+            for point in points_list:
+                if point == [1, 0, 0]:
+                    lines.append(Line(start= np.array(location), end=np.add(location,[1, 0., 0.]), buff=0, color = '#ffeb69'))
+                    var_index_2 = var_index_2 + 1
+                location = np.add(location,point)
+            group_lines = Group(*lines)
+            self.play(ShowCreation(group_lines, scale=0.5, run_time = 0.28))
+            self.wait(0.5)
+            self.play(Uncreate(group_lines, scale=0.5, run_time = 0.28))
