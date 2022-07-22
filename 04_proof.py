@@ -16,7 +16,7 @@ class proof(Scene):
             self.play(FadeIn(dot, scale=0.5, run_time = 0.08))
         self.wait(0.5)
         self.play(pos_paths.animate.shift(3 * LEFT).scale(0.5))
-        points_1 = [[1, 0, 0],[1, 0, 0],[0, 1, 0],[1, 0, 0],[0, 1, 0],[0, 1, 0],[1, 0, 0],[0, 1, 0]]
+        points_1 = [[1, 0, 0],[1, 0, 0],[0, 1, 0],[1, 0, 0],[0, 1, 0],[0, 1, 0],[0, 1, 0],[1, 0, 0]]
         points_2 = [[0, 1, 0],[0, 1, 0],[1, 0, 0],[0, 1, 0],[0, 1, 0],[1, 0, 0],[1, 0, 0],[1, 0, 0]]
         points_3 = [[1, 0, 0],[1, 0, 0],[0, 1, 0],[0, 1, 0],[0, 1, 0],[1, 0, 0],[0, 1, 0],[1, 0, 0]]
         
@@ -31,6 +31,8 @@ class proof(Scene):
             path_1.append(Line(start= start, end= end, buff=0, color = '#ffeb69'))
             self.play(ShowCreation(path_1[-1], scale=0.5, run_time = 0.28))
             start = np.array(end)
+        save_path_3 = Group(*path_1)
+        save_path_3.save_state()
         self.play(Uncreate(Group(*path_1), scale=0.5, run_time = 0.28))
         self.play(ApplyMethod(move_dot.move_to, np.array([-2., -2., 0.])), run_time = 0.3)
         start = np.array([-2.,-2.,0])
@@ -51,6 +53,8 @@ class proof(Scene):
             path_3.append(Line(start= start, end= end, buff=0, color = '#ffeb69'))
             self.play(ShowCreation(path_3[-1], scale=0.5, run_time = 0.28))
             start = np.array(end)
+        save_path_2 = Group(*path_3)
+        save_path_2.save_state()
         self.play(Uncreate(Group(*path_3), scale=0.5, run_time = 0.28))
         
         #showing possible up strokes   
@@ -89,12 +93,42 @@ class proof(Scene):
         self.play(ShowCreation(save_path, scale=0.5, run_time = 0.28))
         self.play(ShowCreation(line_p, scale=0.5, run_time = 0.28))
         flipped_points = [[-2,-1,0],[-1,-1,0],[-1,0,0],[0,0,0],[1,0,0],[1,1,0],[1,2,0],[1,3,0]]
+        group_lines_f = self.flip_path(flipped_points)
+        self.play(ShowCreation(group_lines_f, scale=0.5, run_time = 0.28))
+        self.play(ApplyMethod(move_dot.shift, [-1,1,0]), run_time = 0.3)
+        new_final = Tex("(3,5)")
+        new_final.shift([2,3,0])
+        new_final_t = Tex("(n-1,n+1)")
+        new_final_t.shift([3,3,0])
+        self.play(ShowCreation(new_final, scale=0.5, run_time = 0.28))
+        self.play(ReplacementTransform(new_final, new_final_t))
+        uncreate_group = Group(*new_final_t, group_lines_f, *save_path)
+        self.play(Uncreate(uncreate_group))
+        
+        save_path_3.restore()
+        self.play(ShowCreation(save_path_3, scale=0.5, run_time = 0.28))
+        flipped_points_2 = [[1,2,0],[1,3,0]]
+        group_lines_f_2 = self.flip_path(flipped_points_2)
+        self.play(ShowCreation(group_lines_f_2, scale=0.5, run_time = 0.28))
+        uncreate_group_2 = Group(*save_path_3, group_lines_f_2)
+        self.play(Uncreate(uncreate_group_2))
+        
+        save_path_2.restore()
+        self.play(ShowCreation(save_path_2, scale=0.5, run_time = 0.28))
+        flipped_points_3 = [[0,1,0],[0,2,0],[1,2,0],[1,3,0]]
+        group_lines_f_3 = self.flip_path(flipped_points_3)
+        self.play(ShowCreation(group_lines_f_3, scale=0.5, run_time = 0.28))
+        uncreate_group_3 = Group(*save_path_2, group_lines_f_3)
+        self.play(Uncreate(uncreate_group_3))
+        
+    def flip_path(self, points_list):
         flipped_path = []
         count = 1
-        for point in flipped_points:
-            if point != [1,3,0]:
-                flipped_path.append(Line(start = np.array(point), end=np.array(flipped_points[count]), buff=0, color = '#ff6a00'))
+        for point in points_list:
+            if point != points_list[-1]:
+                flipped_path.append(Line(start = np.array(point), end=np.array(points_list[count]), buff=0, color = '#ff6a00'))
             count+=1
-        group_lines_f = Group(*flipped_path)
-        self.play(ShowCreation(group_lines_f, scale=0.5, run_time = 0.28))
+        return Group(*flipped_path)
+        
+        
             
